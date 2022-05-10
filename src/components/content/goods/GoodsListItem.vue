@@ -1,6 +1,7 @@
 <template>
-    <div class="goods-item">
-        <img :src="pitem.firstpicture" alt />
+    <div class="goods-item" @click="itemClick">
+        <!-- 监听图片加载 -->
+        <img :src="pitem.firstpicture" @load="imgLoad" />
         <div class="goods-text">
             <p>{{pitem.description}}</p>
             <span class="item-title">{{pitem.title}}</span>
@@ -15,6 +16,14 @@ export default {
     props: {
         pitem: Object,
     },
+    methods: {
+        imgLoad() {
+            this.$bus.$emit('imgLoad')
+        },
+        itemClick() {
+            this.$router.push('/detail/'+this.pitem.title)
+        }
+    }
 };
 </script>
 
@@ -59,13 +68,13 @@ export default {
     text-overflow: ellipsis; */
 }
 .goods-item .item-createtime::before {
-    content: "";
+    content: '';
     /* position: absolute; */
     display: inline-block;
     width: 14px;
     height: 14px;
     /* 0/14px必要 */
-    background: url("~assets/img/common/collect.svg") 0 0/14px 14px;
+    background: url('~assets/img/common/collect.svg') 0 0/14px 14px;
     margin-right: 4px;
     vertical-align: top;
 }

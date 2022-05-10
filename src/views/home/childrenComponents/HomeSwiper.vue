@@ -2,7 +2,7 @@
     <swiper>
         <swiper-item v-for="(banner, index) in pbanners" :key="index">
             <a :href="banner.link">
-                <img :src="banner.image" alt />
+                <img :src="banner.image" @load="imgLoad" />
             </a>
         </swiper-item>
     </swiper>
@@ -18,6 +18,11 @@ export default {
     },
     props:{
         pbanners: Array
+    },
+    methods: {
+        imgLoad(){
+            this.$emit('swiperImgLoad');
+        }
     }
 };
 </script>

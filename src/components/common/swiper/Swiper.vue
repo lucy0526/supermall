@@ -59,7 +59,7 @@ export default {
             this.handleDom();
             // 开启定时器
             this.startTimer();
-        }, 100);
+        }, 200);
     },
     methods: {
         handleDom: function () {
@@ -68,6 +68,10 @@ export default {
             let slideDivs = document.querySelectorAll(".slide");
             // 获得个数
             this.slideCount = slideDivs.length;
+
+            // console.log(document.querySelectorAll(".slide"))
+
+
             //
             if (this.slideCount > 1) {
                 let cloneFirst = slideDivs[0].cloneNode(true);
@@ -99,7 +103,7 @@ export default {
                 "-ms-transform"
             ] = `translate3d(${position}px), 0, 0`;
         },
-        
+
         // 定时器操作
         startTimer: function () {
             this.playTimer = window.setInterval(() => {
@@ -198,7 +202,6 @@ export default {
     position: absolute;
     width: 100%;
     bottom: 8px;
-
 }
 .indicator-item {
     display: inline-block;

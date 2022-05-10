@@ -46,6 +46,10 @@ export default {
         // 加载更多方法调用
         finishPullUp(){
             this.scroll.finishPullUp();
+        },
+        // 重新计算高度
+        refresh() {
+            this.scroll.refresh();
         }
     }
 }

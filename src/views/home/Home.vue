@@ -5,6 +5,14 @@
             <div slot="center" class="center">购物街</div>
         </nav-bar>
 
+        <tab-control
+            class="tab-control-fixed"
+            ref="tabControlFixed"
+            :ptitles="titles"
+            @tabClick="changeList"
+            v-show="isShowTabControl"
+        ></tab-control>
+
         <scroll
             class="content"
             ref="scroll"
@@ -14,7 +22,7 @@
             @pullUpload="loadMore"
         >
             <!-- 轮播图 -->
-            <home-swiper :pbanners="banners"></home-swiper>
+            <home-swiper :pbanners="banners" @swiperImgLoad="swiperFinishLoad"></home-swiper>
 
             <!-- 推荐nav -->
             <home-recommend :precommends="recommends"></home-recommend>
@@ -24,7 +32,13 @@
 
             <!-- 选项卡 -->
             <!-- @tabClick="changeList"不带参数 -->
-            <tab-control class="tab-control-position" :ptitles="titles" @tabClick="changeList"></tab-control>
+            <tab-control
+                class="tab-control-position"
+                ref="tabControl"
+                :ptitles="titles"
+                @tabClick="changeList"
+                v-show="!isShowTabControl"
+            ></tab-control>
             <!-- <tab-control :ptitles="['流行', '新款', '精选']"></tab-control> -->
 
             <!-- list -->
@@ -40,6 +54,7 @@
 <script>
 import { homeMultidataRequest, homeGoodsRequest } from "network/home";
 // import BScroll from 'better-scroll'
+import { debounce } from "common/utils"
 
 // 顶部标签
 import NavBar from "components/common/navbar/NavBar";
@@ -72,7 +87,10 @@ export default {
                 selected: { page: 0, list: [] },
             },
             currentType: 'pop',
-            isShowBackTop: false
+            isShowBackTop: false,
+            tabControlOffsetTop: 0,
+            // isFixedTabControl: false,
+            isShowTabControl: false,
         };
     },
     components: {
@@ -93,6 +111,14 @@ export default {
         this.getHomeGoods("pop");
         this.getHomeGoods("new");
         this.getHomeGoods("selected");
+    },
+    mounted() {
+        const refresh = debounce(this.$refs.scroll.refresh, 100)
+        // 注册监听事件：图片加载
+        this.$bus.$on('imgLoad', () => {
+            // this.$refs.scroll.refresh();
+            refresh();
+        })
     },
     methods: {
         getHomeMutidata() {
@@ -155,6 +181,9 @@ export default {
                 case 2: this.currentType = 'selected'
                     break;
             }
+            // 让两个选项卡一致
+            this.$refs.tabControl.currentIndex = index;
+            this.$refs.tabControlFixed.currentIndex = index;
         },
 
         // 返回顶部点击
@@ -163,17 +192,27 @@ export default {
             this.$refs.scroll.scrollTo(0, 0, 500)
         },
 
-        // 是否显示返回顶部按钮
         contentScroll(position) {
+            // 1. 是否显示返回顶部按钮
             this.isShowBackTop = -position.y > 100;
+            // 2. 是否吸顶
+            // this.isFixedTabControl = -position.y > this.tabControlOffsetTop
+            this.isShowTabControl = -position.y > this.tabControlOffsetTop;
         },
 
         loadMore() {
             // 加载更多数据，并更新加载完成方法
             this.getHomeGoods(this.currentType);
-            // 重新计算scroll高度
-            this.$refs.scroll.scroll.refresh();
+            // 重新计算scroll高度：创建一个监听，每次加载图片都要重新算
+            // this.$refs.scroll.scroll.refresh();
 
+        },
+
+        // 获得选项卡的高度
+        swiperFinishLoad() {
+            // $el：表示组件中的元素
+            this.tabControlOffsetTop = this.$refs.tabControl.$el.offsetTop;
+            // console.log(this.tabControlOffsetTop)
         }
     },
 };
@@ -181,27 +220,27 @@ export default {
 
 <style scoped>
 #home {
-    padding-top: 44px;
+    /* padding-top: 44px; */
     /* vh:视口高度，表示100%视口 */
     height: 100vh;
 }
 .home-nav {
-    position: fixed;
-    z-index: 1;
+    /* position: fixed; */
+    /* z-index: 1;
     left: 0;
     right: 0;
-    top: 0;
+    top: 0; */
 
     background-color: var(--color-tint);
 }
 .home-nav .center {
     color: white;
 }
-#home .tab-control-position {
-    /* 移动到顶部后 固定 */
+/* 移动到顶部后 固定 */
+/* #home .tab-control-position {
     position: sticky;
     top: 88px;
-}
+} */
 
 .content {
     /* height: 900px; */

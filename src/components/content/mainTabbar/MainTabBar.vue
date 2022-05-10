@@ -1,5 +1,5 @@
 <template>
-    <tab-bar>
+    <tab-bar class="tab-bar">
         <tab-bar-item path="/home">
             <img slot="item-icon" src="~assets/img/tabbar/home.svg" alt />
             <img slot="item-icon-active" src="~assets/img/tabbar/home_active.svg" alt />
@@ -13,7 +13,7 @@
         <tab-bar-item path="/cart">
             <img slot="item-icon" src="~assets/img/tabbar/shopcart.svg" alt />
             <img slot="item-icon-active" src="~assets/img/tabbar/shopcart_active.svg" alt />
-            <div slot="item-text">购物车</div>
+            <div slot="item-text">快速访问</div>
         </tab-bar-item>
         <tab-bar-item path="/profile">
             <img slot="item-icon" src="~assets/img/tabbar/profile.svg" alt />
@@ -37,4 +37,7 @@ export default {
 </script>
 
 <style scoped>
+/* .tab-bar{
+    margin-bottom: 49px;
+} */
 </style>
